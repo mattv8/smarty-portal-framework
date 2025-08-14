@@ -64,7 +64,7 @@ jobs:
 
   production_ai-qr-framework:
     name: Update AI QR Production Portal Framework (GoDaddy)
-    runs-on: [self-hosted, framework, production]
+    runs-on: self-hosted
     if: github.event_name == 'workflow_dispatch'
     env:
       WEBROOT: ${{ secrets.QR_LABELS_PRODUCTION_WEBROOT }}
