@@ -64,7 +64,7 @@ jobs:
 
   production_ai-qr-framework:
     name: Update AI QR Production Portal Framework (GoDaddy)
-    runs-on: self-hosted
+    runs-on: [self-hosted, framework, production]
     if: github.event_name == 'workflow_dispatch'
     env:
       WEBROOT: ${{ secrets.QR_LABELS_PRODUCTION_WEBROOT }}
@@ -89,3 +89,4 @@ jobs:
           sudo mkdir -p ${{env.WEBROOT}}/framework
           sudo rsync -rv ./framework/ ${{env.WEBROOT}}/framework --delete --exclude-from=./_exclusions.txt --exclude='composer.*'
           sudo rsync -rv ./ ${{env.WEBROOT}} --exclude 'framework' --exclude-from=./_exclusions.txt
+          sudo chown ${{env.USER}} ${{env.WEBROOT}} -R
