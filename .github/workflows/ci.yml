@@ -86,6 +86,7 @@ jobs:
       - name: Sync Framework Directory
         run: |
           if [ -z "${{env.WEBROOT}}" ]; then echo "Need to set webroot as GitHub Actions secret" && exit 1; fi
+          sudo mkdir -p ${{env.WEBROOT}}/framework
           sudo rsync -rv ./framework/ ${{env.WEBROOT}}/framework --delete --exclude-from=./_exclusions.txt --exclude='composer.*'
           sudo rsync -rv ./ ${{env.WEBROOT}} --exclude 'framework' --exclude-from=./_exclusions.txt
-          sudo chown $USER:$USER ${{env.WEBROOT}} -R
+          sudo chown ${{env.USER}}:${{env.USER}} ${{env.WEBROOT}} -R
