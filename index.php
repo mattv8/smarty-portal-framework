@@ -117,20 +117,24 @@ $smarty->assign('user_attr_map', $user_attr_map);
 #==============================================================================
 # Route to page
 #==============================================================================
-if (isset($_GET["request"]) and $authenticated) { // If we're here for an independent request
+// Handle AJAX requests (both GET and POST)
+$is_ajax_request = (isset($_GET["request"]) || isset($_POST["request"])) && $authenticated;
+$request_method = isset($_GET["request"]) ? $_GET : $_POST;
+
+if ($is_ajax_request) { // If we're here for an independent request
     if (isset($_GET["debug"]) and $_GET["debug"]) { // Set debug parameter
         $smarty->assign('debugView', true);
     }
 
-    if (strcmp('saveSessionVar', $_GET["request"]) == 0) { // Handle AJAX requests to save a session
-        $key = $_GET['key'];
-        $value = $_GET['value'];
-        $_SESSION[$key] = $value; // Assigns the current $_GET parameter value to the $_SESSION superglobal with the same key
+    if (strcmp('saveSessionVar', $request_method["request"]) == 0) { // Handle AJAX requests to save a session
+        $key = $request_method['key'];
+        $value = $request_method['value'];
+        $_SESSION[$key] = $value; // Assigns the current parameter value to the $_SESSION superglobal with the same key
         echo json_encode(array('success' => true, 'key' => $key, 'value' => $value));
     }
 
-    if (strcmp('getSessionVar', $_GET["request"]) == 0) { // Handle AJAX requests to get a session
-        $key = $_GET['key'];
+    if (strcmp('getSessionVar', $request_method["request"]) == 0) { // Handle AJAX requests to get a session
+        $key = $request_method['key'];
         $value = $_SESSION[$key];
         echo json_encode(array('success' => true, 'key' => $key, 'value' => $value));
     }
@@ -141,15 +145,19 @@ $page = "login"; // Default route to login page
 if ($authenticated) {
     $page = isset($default_page) ? $default_page : 'error';
 } // If authenticated, route to default page
-if (isset($_GET["page"]) and $_GET["page"] and !$authenticated) {
-    if (in_array($_GET["page"], $public_pages)) {
-        $page = $_GET["page"];// Allow routing to public pages
+
+// Handle page routing for both GET and POST
+$page_param = isset($_GET["page"]) ? $_GET["page"] : (isset($_POST["page"]) ? $_POST["page"] : null);
+
+if ($page_param && !$authenticated) {
+    if (in_array($page_param, $public_pages)) {
+        $page = $page_param;// Allow routing to public pages
     } else {
         $page = 'login';// Route to login
     }
 } // If not authenticated, route to login
-if (isset($_GET["page"])  and $_GET["page"] and $_GET["page"] != "login" and $authenticated) {
-    $page = $_GET["page"];
+if ($page_param && $page_param != "login" && $authenticated) {
+    $page = $page_param;
 }
 if (file_exists($page . ".php")) {
     require_once($page . ".php");
@@ -188,7 +196,7 @@ if ($page === "error") {
     $smarty->assign('error', "");
 }
 
-if (!isset($_GET["request"])) {
+if (!$is_ajax_request) {
     if (file_exists("templates/index.tpl")) { // Allow override with local index.tpl
         $smarty->display('templates/index.tpl');
     } else {
