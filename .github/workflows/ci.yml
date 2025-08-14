@@ -35,12 +35,40 @@ jobs:
           sudo chown $USER:$USER ${{env.WEBROOT}} -R
 
   staging_ai-qr-framework:
-    name: Update AI QR Labels Development Portal Framework
+    name: Update AI QR Development Portal Framework
     runs-on: self-hosted
     if: github.event_name == 'workflow_dispatch'
     env:
-      WEBROOT: ${{ secrets.QR_LABELS_PRODUCTION_WEBROOT }}
+      WEBROOT: ${{ secrets.QR_LABELS_STAGING_WEBROOT }}
       USER: ${{ secrets.WEBROOT_USER }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install UglifyJS
+        run: |
+          sudo npm install uglifyjs-folder -g
+          uglifyjs-folder ./framework/js -eo ./framework/js/ -p "**/*.js"
+
+      - name: Sync Framework Directory
+        run: |
+          if [ -z "${{env.WEBROOT}}" ]; then echo "Need to set webroot as GitHub Actions secret" && exit 1; fi
+          sudo rsync -rv ./framework/ ${{env.WEBROOT}}/framework --delete --exclude-from=./_exclusions.txt --exclude='composer.*'
+          sudo rsync -rv ./ ${{env.WEBROOT}} --exclude 'framework' --exclude-from=./_exclusions.txt
+          sudo chown $USER:$USER ${{env.WEBROOT}} -R
+
+  production_ai-qr-framework:
+    name: Update AI QR Production Portal Framework (GoDaddy)
+    runs-on: [self-hosted, framework, production]
+    if: github.event_name == 'workflow_dispatch'
+    env:
+      WEBROOT: ${{ secrets.QR_LABELS_PRODUCTION_WEBROOT }}
+      USER: ${{ secrets.QR_PRODUCTION_WEBROOT_USER }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
