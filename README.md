@@ -1,92 +1,232 @@
-# Portal Framework 2.0
+# Smarty Portal Framework 2.0
 
-Using new Smarty page rendering format.
+A lightweight PHP framework for building portal-style web applications with Smarty templating, Bootstrap 5 UI, and built-in user authentication.
 
-## Getting started
+## Features
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+- **Smarty 4 Templating**: Modern template engine with inheritance and caching
+- **Bootstrap 5 UI**: Responsive design with pre-built components
+- **User Authentication**: Built-in login, session management, and user administration
+- **Modular Navigation**: Dynamic menu system with modal and page-based navigation
+- **LDAP/Local Auth**: Flexible authentication backends
+- **Page Routing**: Clean URL routing system via `index.php`
+- **Admin Tools**: User management modal with CRUD operations
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+## Using as Git Subtree
 
-## Add your files
+### Initial Setup
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+To integrate this framework into your project using git subtree:
+
+```bash
+# From your project root
+git subtree add --prefix framework https://github.com/mattv8/smarty-portal-framework.git main --squash
+```
+
+### Updating the Framework
+
+To pull latest framework updates into your project:
+
+```bash
+git subtree pull --prefix framework https://github.com/mattv8/smarty-portal-framework.git main --squash
+```
+
+Or use the helper script pattern:
+
+```bash
+#!/bin/bash
+# scripts/update-framework.sh
+git subtree pull --prefix framework https://github.com/mattv8/smarty-portal-framework.git main --squash
+```
+
+### Project Structure
+
+When using as a subtree, your project should look like:
 
 ```
-cd existing_repo
-git remote add origin https://code.webguyinternet.com/webguy-employees/portal-framework-2.0.git
-git branch -M main
-git push -uf origin main
+your-project/
+├── framework/                    # This framework (git subtree)
+│   ├── framework/               # Framework core files
+│   │   ├── conf/               # Configuration
+│   │   ├── css/                # Framework styles
+│   │   ├── js/                 # Framework JavaScript
+│   │   ├── tpl/                # Framework templates
+│   │   └── vendor/             # Dependencies
+│   ├── index.php               # Framework router
+│   └── templates/              # Framework page templates
+├── index.php -> framework/index.php  # Symlink to framework router
+├── api/                        # Your API endpoints
+├── css/                        # Your custom CSS
+├── js/                         # Your custom JavaScript
+├── lib/                        # Your PHP libraries
+├── templates/                  # Your Smarty templates (override framework)
+├── config.local.php            # Your configuration
+├── functions.php               # Your helper functions
+└── *.php                       # Your page controllers (home.php, admin.php, etc.)
 ```
 
-## Integrate with your tools
+## Quick Start
 
-- [ ] [Set up project integrations](https://code.webguyinternet.com/webguy-employees/portal-framework-2.0/-/settings/integrations)
+### 1. Create Configuration
 
-## Collaborate with your team
+Copy the template and customize:
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+```bash
+cp framework/index.local.php config.local.php
+```
 
-## Test and Deploy
+Edit `config.local.php`:
 
-Use the built-in continuous integration in GitLab.
+```php
+<?php
+# Database connection
+$db_servername = "localhost";
+$db_username = "your_user";
+$db_password = "your_pass";
+$db_name = "your_database";
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+# Authentication method
+$auth_method = 'local'; // or 'ldap'
 
-***
+# Default page for unauthenticated users
+$default_page = 'home';
 
-# Editing this README
+# Public pages (no login required)
+$public_pages = array('home', 'about');
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
+# Navigation buttons
+$nav_buttons = array(
+    'home' => array(
+        'title' => 'Home',
+        'faclass' => 'home',
+        'btn_color' => 'primary',
+        'btn_type' => 'page',
+    ),
+    'admin' => array(
+        'title' => 'Admin',
+        'faclass' => 'cog',
+        'btn_color' => 'secondary',
+        'btn_type' => 'page',
+    ),
+);
+```
 
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+### 2. Create Page Controllers
 
-## Name
-Choose a self-explaining name for your project.
+Create `home.php`:
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+```php
+<?php
+// Prepare data for template
+$smarty->assign('page_title', 'Welcome');
+$smarty->assign('message', 'Hello World!');
+// Framework handles rendering via index.php
+```
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+### 3. Create Templates
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+Create `templates/home.tpl`:
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+```smarty
+<div class="container mt-4">
+    <h1>{$page_title}</h1>
+    <p>{$message}</p>
+</div>
+```
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+### 4. Set Up Database (for local auth)
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+```sql
+CREATE TABLE user (
+    username VARCHAR(255) PRIMARY KEY,
+    password VARCHAR(255),
+    active BOOLEAN DEFAULT TRUE
+);
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+CREATE TABLE user_attr (
+    username VARCHAR(255),
+    attr_name VARCHAR(255),
+    attr_value TEXT,
+    FOREIGN KEY (username) REFERENCES user(username)
+);
+```
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+## Customization
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+### Override Framework Templates
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+Place templates with the same name in your `templates/` directory to override framework defaults:
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+- `templates/index.tpl` - Main layout wrapper
+- `templates/menu.tpl` - Navigation menu
+- `templates/login.tpl` - Login page
+- `templates/header.tpl` - Custom CSS/JS includes
+
+### Add Custom CSS/JS
+
+In `templates/header.tpl`:
+
+```smarty
+<link rel="stylesheet" href="css/custom.css" />
+<script src="js/custom.js"></script>
+```
+
+### Navigation Buttons
+
+Configure in `config.local.php`:
+
+```php
+$nav_buttons = array(
+    'pagename' => array(
+        'title' => 'Display Name',
+        'faclass' => 'icon-name',       // Font Awesome icon
+        'btn_color' => 'primary',        // Bootstrap color
+        'btn_type' => 'page',            // 'page' or 'modal'
+        'modalId' => 'MyModal',          // If btn_type='modal'
+    ),
+);
+```
+
+## Authentication
+
+### Local Authentication
+
+Users stored in MySQL database. Default admin user:
+- Username: `admin`
+- Password: `admin` (change immediately!)
+
+### LDAP Authentication
+
+Set in `config.local.php`:
+
+```php
+$auth_method = 'ldap';
+$ldap_server = 'ldap://your-server.com';
+$ldap_base_dn = 'dc=example,dc=com';
+```
+
+## Framework Updates
+
+**Important**: Never edit framework files directly in the `framework/` directory. Changes will be lost when updating the subtree.
+
+To contribute framework improvements:
+1. Fork https://github.com/mattv8/smarty-portal-framework
+2. Make changes in your fork
+3. Submit a pull request
+4. Update your project's subtree after merge
+
+## Requirements
+
+- PHP 8.1+
+- MySQL 5.7+ or MariaDB
+- Apache/Nginx with mod_rewrite
+- Composer (for Smarty dependencies)
 
 ## License
-For open source projects, say how it is licensed.
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+See LICENSE file in framework repository.
+
+## Support
+
+- Framework Issues: https://github.com/mattv8/smarty-portal-framework/issues
+- Documentation: https://github.com/mattv8/smarty-portal-framework/wiki
