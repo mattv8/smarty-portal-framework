@@ -8,10 +8,13 @@
 // Select2 JQuery OnLoad Classes for selection boxes.
 $(document).ready(function() {
 
-    // Org Unit selection
-    $('#select2-siteMemberships').select2({
-        dropdownParent: document.getElementById('select2-siteMemberships').closest('form'),
-     });
+    // Org Unit selection - only initialize if element exists
+    const siteMembershipsElement = document.getElementById('select2-siteMemberships');
+    if (siteMembershipsElement) {
+        $('#select2-siteMemberships').select2({
+            dropdownParent: siteMembershipsElement.closest('form'),
+        });
+    }
 
 });
 

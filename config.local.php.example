@@ -1,0 +1,20 @@
+<?php
+#==============================================================================
+# Local Configuration Override Example
+# Copy this file to config.local.php and customize as needed
+#==============================================================================
+
+# Example: Custom favicon path
+# $favicon = "custom/path/to/favicon.ico";
+
+# Example: Custom logo
+# $logo = "custom/images/my-logo.png";
+
+# Example: Custom background
+# $background_image = "custom/images/my-background.jpg";
+
+# Example: Disable authentication
+# $auth_type = 'none';
+
+# Example: Custom CSS
+# $custom_css = "custom/css/my-styles.css";

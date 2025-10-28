@@ -68,6 +68,7 @@ $revealPassword = true;
 # Graphics
 $logo = "framework/images/logo.png";
 $background_image = "framework/images/marek-piwnicki-s_fgw1df-_I-unsplash.jpg";
+$favicon = "framework/images/favicon.ico"; // Default favicon path, can be overridden in config.local.php
 $custom_css = "";
 #$logout_link = "http://auth.example.com/logout";
 $page_bg_color_class = 'bg-light';// See https://getbootstrap.com/docs/5.0/utilities/background/ for examples of valid classes
@@ -125,6 +126,11 @@ $js_config = array('revealPassword' => $revealPassword, 'recaptcha_key' => $reca
 # Allow to override current settings with local configuration
 if (file_exists ($_SERVER['DOCUMENT_ROOT'].'/config.local.php')) {
     include ($_SERVER['DOCUMENT_ROOT'].'/config.local.php');
+}
+
+# Check for favicon.ico override in root directory (takes precedence over config setting)
+if (file_exists($_SERVER['DOCUMENT_ROOT'].'/favicon.ico')) {
+    $favicon = "favicon.ico";
 }
 
 # Smarty

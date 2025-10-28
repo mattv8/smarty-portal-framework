@@ -63,6 +63,7 @@ if ($auth_type == 'ldap') {
 }
 $smarty->assign('logo', $logo);
 $smarty->assign('background_image', $background_image);
+$smarty->assign('favicon', $favicon);
 $smarty->assign('page_bg_color_class', $page_bg_color_class);
 $smarty->assign('custom_css', $custom_css);
 $smarty->assign('date_specifiers', $date_specifiers);
