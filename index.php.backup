@@ -145,9 +145,7 @@ $page = "login"; // Default route to login page
 
 if ($authenticated) {
     $page = isset($default_page) ? $default_page : 'error';
-} else if (isset($default_page) && in_array($default_page, $public_pages)) {
-    $page = $default_page; // If not authenticated but default page is public, use it
-} // If authenticated, route to default page, or if default is public
+} // If authenticated, route to default page
 
 // Handle page routing for both GET and POST
 $page_param = isset($_GET["page"]) ? $_GET["page"] : (isset($_POST["page"]) ? $_POST["page"] : null);

@@ -5,12 +5,21 @@
 /**
  * Performs reCaptcha validation and executes the specified success function if successful.
  * Retrieves the reCaptcha token and sends it to the server for verification.
+ * If reCAPTCHA is not configured, directly executes the success function.
  * @param {HTMLElement} button - The button element that triggers the reCaptcha validation.
  * @param {Function} successFunction - The function to be executed if reCaptcha validation is successful.
  */
 function reCaptcha(button, successFunction) {
     event.preventDefault();
     button.disabled = true; // Disable the button initially
+
+    // Check if reCAPTCHA is configured
+    if (!GLOBAL.config.recaptcha_key || GLOBAL.config.recaptcha_key === '') {
+        // reCAPTCHA is not configured, skip verification and execute success function
+        successFunction();
+        button.disabled = false;
+        return;
+    }
 
     grecaptcha.ready(function () {
         grecaptcha.execute(GLOBAL.config.recaptcha_key, { action: 'submit' }).then(function (token) {

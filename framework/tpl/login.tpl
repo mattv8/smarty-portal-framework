@@ -1,4 +1,6 @@
+{if $recaptcha_key && $recaptcha_key neq ''}
 <script src="https://www.google.com/recaptcha/api.js?render={$recaptcha_key}"></script>
+{/if}
 {* Page Specific JS *}
 {if file_exists('framework/js/login.min.js')}
     <script src="framework/js/login.min.js"></script>

@@ -2,6 +2,15 @@
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '/framework/conf/config.php');
 
+// Check if reCAPTCHA is configured
+if (empty($recaptcha_secret) || empty($recaptcha_key)) {
+    // reCAPTCHA is not configured, skip verification
+    $verification = ['success' => true, 'skipped' => true];
+    header('Content-Type: application/json');
+    echo json_encode($verification);
+    exit;
+}
+
 if (isset($_POST['token'])) {
     $token = $_POST['token'];
 

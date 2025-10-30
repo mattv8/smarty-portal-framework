@@ -84,8 +84,9 @@ $smarty_cache_dir = "cache/smarty";
 # Authentication
 // Specify whether you'd like to secure the portal with authentication.
 $auth_type = 'none';//Chose from 'none', 'ldap' or 'sql';
-$recaptcha_key = '6Le68_slAAAAAIY8g6THLGQ1NkiCOtlRYzXlTk_s';
-$recaptcha_secret = '6Le68_slAAAAAAWRS0qz1x5h-0cZwnJyAu_n82w8';
+// reCAPTCHA keys - leave empty to disable reCAPTCHA verification
+$recaptcha_key = '';
+$recaptcha_secret = '';
 
 
 # SQL Configuration
