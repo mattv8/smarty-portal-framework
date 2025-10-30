@@ -5,6 +5,40 @@
 require_once($_SERVER['DOCUMENT_ROOT'] . '/framework/conf/config.php');
 session_start(); // Continue session variables
 
+/**
+ * Create a database connection with proper UTF-8 charset support
+ *
+ * This function establishes a MySQL/MariaDB connection and automatically sets
+ * the character set to utf8mb4 to properly handle all Unicode characters
+ * including emojis and special characters.
+ *
+ * @param string $servername Database server hostname
+ * @param string $username Database username
+ * @param string $password Database password
+ * @param string $dbname Database name
+ * @param string $charset Character set to use (default: 'utf8mb4' for full Unicode support)
+ *
+ * @return mysqli|false Database connection object or false on failure
+ *
+ * @example
+ * ```php
+ * require(__DIR__ . '/config.local.php');
+ * $db_conn = getDbConnection($db_servername, $db_username, $db_password, $db_name);
+ * if (!$db_conn) {
+ *     die('Database connection failed');
+ * }
+ * ```
+ */
+function getDbConnection($servername, $username, $password, $dbname, $charset = 'utf8mb4') {
+    $conn = mysqli_connect($servername, $username, $password, $dbname);
+    if ($conn && $charset) {
+        // Set charset to properly handle all Unicode characters including emojis
+        // utf8mb4 is the true UTF-8 encoding in MySQL (utf8/utf8mb3 only supports 3-byte chars)
+        mysqli_set_charset($conn, $charset);
+    }
+    return $conn;
+}
+
 # Fetches array from subarrays by key. Only works on uniform multidimensional arrays, i.e.
 # $entries_map = array(
 #   'Entry' => array( 'key' => 'FormId', 'faclass' => 'lock', 'type' => 'date'),
